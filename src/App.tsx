@@ -61,29 +61,46 @@ function App() {
 
   return (
     <>
-      <h1>Happy-Level-Up</h1>
+      <h1 className="title">
+      <span>H</span>
+      <span>a</span>
+      <span>p</span>
+      <span>p</span>
+      <span>y</span>
+      <span>-</span>
+      <span>L</span>
+      <span>e</span>
+      <span>v</span>
+      <span>e</span>
+      <span>l</span>
+      <span>-</span>
+      <span>U</span>
+      <span>p</span>
+    </h1>
       <h2>Level: {culculateLevel(experiences).level}<span>（{levelMessage(culculateLevel(experiences).level)}）</span></h2>
       <h2>Current Exp: {culculateLevel(experiences).totalexp} / 100</h2>
 
-      <input
-        value={experience}
-        onChange={(e) => setExperience(e.target.value)}
-        placeholder="経験を入力(例：筋トレ）"
-      />
+      <div className="inputItems">
+        <input
+          value={experience}
+          onChange={(e) => setExperience(e.target.value)}
+          placeholder="経験を入力(例：筋トレ）"
+        />
 
-      <input
-        type="number"
-        max="100"
-        value={exp}
-        onChange={(e) => setExp(Number(e.target.value))}
-      />
+        <input
+          type="number"
+          max="100"
+          value={exp}
+          onChange={(e) => setExp(Number(e.target.value))}
+        />
 
-      <button onClick={addExperience}>追加</button>
+        <button onClick={addExperience} className="addBtn">追加</button>
+      </div>
 
       {experiences.map((item, index) => (
         <div key={index} className="experience-item">
-          <p>経験：{item.experience}</p>
-          <p>経験値：{item.exp}</p>
+          <p className="expContents">経験：{item.experience}</p>
+          <p className="expValue">経験値：{item.exp}</p>
         </div>
       ))}
     </>

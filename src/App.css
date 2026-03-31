@@ -41,8 +41,35 @@
   color: #888;
 }
 
+.title span:nth-child(3n+1) { color: red; }
+.title span:nth-child(3n+2) { color: blue; }
+.title span:nth-child(3n)   { color: green; }
+
+.inputItems{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
 .experience-item {
   margin-bottom: 1rem;
   border: 1px solid black;
   border-radius: 5px;
+  background-color: white;
+}
+
+.expContents{
+  color: black;
+}
+
+.expValue{
+  color: black;
+}
+
+body{
+  background-color: beige;
+}
+
+.addBtn{
+  border: solid 1px black;
 }
