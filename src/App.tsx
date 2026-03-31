@@ -12,7 +12,6 @@ type Experience = {
 }
 
 function App() {
-  let level = 1
   const [experience, setExperience] = useState('')
   const [exp, setExp] = useState(0)
   const [experiences, setExperiences] = useState<Experience[]>([])
