@@ -19,10 +19,15 @@ function App() {
   const addExperience = () => {
     if (!experience.trim()) return
 
-    setExperiences((current) => [
+    if(exp >= 0 && exp <= 100){
+      setExperiences((current) => [
       ...current,
       { experience: experience.trim(), exp },
-    ])
+      ])
+    }else{
+      alert('入力できる数値は0~100です！')
+      return
+    }
     setExperience('')
     setExp(0)
   }
@@ -89,6 +94,7 @@ function App() {
 
         <input
           type="number"
+          min="0"
           max="100"
           value={exp}
           onChange={(e) => setExp(Number(e.target.value))}
