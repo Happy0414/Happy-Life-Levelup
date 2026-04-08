@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import LevelUpModal from './components/LevelUpModal'
 
 type Status = {
   level: number
@@ -15,6 +16,11 @@ function App() {
   const [experience, setExperience] = useState('')
   const [exp, setExp] = useState(0)
   const [experiences, setExperiences] = useState<Experience[]>([])
+  const [isLUModal, setLUModal] = useState<boolean>(false)
+
+  const onClose = () => {
+      setLUModal(false)
+  }
 
   const addExperience = () => {
     if (!experience.trim()) return
@@ -66,6 +72,7 @@ function App() {
 
   return (
     <>
+      <LevelUpModal isOpen={isLUModal} level={culculateLevel(experiences).level} expName={'a'} exp={10} onClose={onClose}/>
       <h1 className="title">
       <span>H</span>
       <span>a</span>
@@ -109,6 +116,8 @@ function App() {
           <p className="expValue">経験値：{item.exp}</p>
         </div>
       ))}
+
+      <button onClick={() => setLUModal(true)}>モーダルを表示</button>
     </>
   )
 }
