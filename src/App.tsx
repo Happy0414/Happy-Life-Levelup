@@ -26,10 +26,21 @@ function App() {
     if (!experience.trim()) return
 
     if(exp >= 0 && exp <= 100){
-      setExperiences((current) => [
-      ...current,
-      { experience: experience.trim(), exp },
-      ])
+      const currentStatus: Status = culculateLevel(experiences)  //現在のステータス（レベル、トータル経験値）を記録
+
+      const nextExperiences: Experience[] = [                   //入力した経験を現在のexperiencesに追加してnextExperiencesとする
+        ...experiences,
+        {experience: experience.trim(), exp: exp}
+      ]
+
+      const nextStatus: Status = culculateLevel(nextExperiences)    //新たなステータスを経験を追加した配列を基に記録
+
+      if(nextStatus.level-currentStatus.level > 0){             //新たなステータスと過去のステータスのレベルの差が0より大きかったら
+        setLUModal(true)                                        //レベルアップモーダルを開く
+      }                                                           
+
+      setExperiences(nextExperiences)                           //経験を追加した経験配列をexperiencesにセット
+
     }else{
       alert('入力できる数値は0~100です！')
       return
@@ -72,7 +83,7 @@ function App() {
 
   return (
     <>
-      <LevelUpModal isOpen={isLUModal} level={culculateLevel(experiences).level} expName={'a'} exp={10} onClose={onClose}/>
+      <LevelUpModal isOpen={isLUModal} level={culculateLevel(experiences).level} onClose={onClose}/>
       <h1 className="title">
       <span>H</span>
       <span>a</span>
