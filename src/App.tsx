@@ -83,7 +83,7 @@ function App() {
 
   return (
     <>
-      <LevelUpModal isOpen={isLUModal} level={culculateLevel(experiences).level} expName={'a'} exp={10} onClose={onClose}/>
+      <LevelUpModal isOpen={isLUModal} level={culculateLevel(experiences).level} onClose={onClose}/>
       <h1 className="title">
       <span>H</span>
       <span>a</span>

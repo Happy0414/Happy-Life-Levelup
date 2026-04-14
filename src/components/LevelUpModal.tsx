@@ -3,12 +3,10 @@ import './LevelUpModal.css'
 type Props =  {
     isOpen: boolean
     level: number 
-    expName: string
-    exp: number 
     onClose: () => void
 }
 
-function LevelUpModal({isOpen, level, expName, exp, onClose}: Props){
+function LevelUpModal({isOpen, level, onClose}: Props){
     if (!isOpen) return null
 
     return (
