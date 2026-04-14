@@ -13,7 +13,7 @@ type Experience = {
 }
 
 export default function ExpPage(){
-    const [experience, setExperience] = useState('')
+  const [experience, setExperience] = useState('')
   const [exp, setExp] = useState(0)
   const [experiences, setExperiences] = useState<Experience[]>([])
   const [isLUModal, setLUModal] = useState<boolean>(false)
@@ -26,10 +26,21 @@ export default function ExpPage(){
     if (!experience.trim()) return
 
     if(exp >= 0 && exp <= 100){
-      setExperiences((current) => [
-      ...current,
-      { experience: experience.trim(), exp },
-      ])
+      const currentStatus = culculateLevel(experiences)
+
+      const nextExperiences: Experience[] = [
+        ...experiences,
+        {experience: experience.trim(), exp}
+      ]
+
+      const nextStatus: Status = culculateLevel(nextExperiences)
+
+      if(nextStatus.level - currentStatus.level >= 1){
+        setLUModal(true)
+      }
+
+      setExperiences(nextExperiences)
+      
     }else{
       alert('入力できる数値は0~100です！')
       return
