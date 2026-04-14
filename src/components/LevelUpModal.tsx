@@ -15,9 +15,8 @@ function LevelUpModal({isOpen, level, expName, exp, onClose}: Props){
         <div onClick={onClose} className="overLay">
             <p>外側をクリックで閉じる</p>
             <div onClick={e => {e.stopPropagation()}} className="modalBox">
-                <p>テストでレベルを表示：{level}</p>
-                <p>{expName}</p>
-                <p>{exp}</p>
+                <p>レベルが上がりました!</p>
+                <p>現在のレベルは{level}!</p>
                 <button onClick={onClose}>閉じる</button>
             </div>
         </div>

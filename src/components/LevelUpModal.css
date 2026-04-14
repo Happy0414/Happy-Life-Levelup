@@ -1,7 +1,9 @@
 .overLay{
     border: solid 2px black;
+    background-color: gray;
 }
 
 .modalBox{
-    border: solid 2px black
+    border: solid 2px black;
+    background-color: white;
 }
