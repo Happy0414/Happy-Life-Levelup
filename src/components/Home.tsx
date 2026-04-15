@@ -1,6 +1,9 @@
+import { useNavigate } from 'react-router-dom'
 import './Home.css'
 
 export default function Home() {
+    const navigate = useNavigate()
+
     return(
         <div>
             <h1 className="title">
@@ -20,6 +23,7 @@ export default function Home() {
                 <span>p</span>
             </h1>
             <h2>自分のレベルを可視化しましょう</h2>
+            <p>このアプリの説明は<a href='./About'>こちら</a></p>
         </div>
     )
 }

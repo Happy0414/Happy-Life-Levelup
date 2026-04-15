@@ -3,6 +3,7 @@ import './App.css'
 import ExpPage from './components/ExperiencePage'
 import Graph from './components/graph'
 import Home from './components/Home'
+import About from './components/About'
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/Exppage" element={<ExpPage />} />
         <Route path="/Graph" element={<Graph />} />
+        <Route path="/About" element={<About />} />
       </Routes>
     </BrowserRouter>
   </div>
