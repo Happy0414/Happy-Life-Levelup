@@ -2,7 +2,6 @@ import { useState } from 'react'
 import LevelUpModal from './LevelUpModal'
 import './ExperiencePage.css'
 import { useNavigate } from 'react-router-dom'
-import Graph from './graph.tsx'
 
 type Status = {
   level: number
