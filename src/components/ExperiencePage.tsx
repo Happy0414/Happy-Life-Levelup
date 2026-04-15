@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import LevelUpModal from './LevelUpModal'
 import './ExperiencePage.css'
+import { useNavigate } from 'react-router-dom'
+import Graph from './graph.tsx'
 
 type Status = {
   level: number
@@ -17,6 +19,7 @@ export default function ExpPage(){
   const [exp, setExp] = useState(0)
   const [experiences, setExperiences] = useState<Experience[]>([])
   const [isLUModal, setLUModal] = useState<boolean>(false)
+  const navigate = useNavigate()
 
   const onClose = () => {
       setLUModal(false)
@@ -84,22 +87,8 @@ export default function ExpPage(){
   return (
     <>
       <LevelUpModal isOpen={isLUModal} level={culculateLevel(experiences).level} onClose={onClose}/>
-      <h1 className="title">
-      <span>H</span>
-      <span>a</span>
-      <span>p</span>
-      <span>p</span>
-      <span>y</span>
-      <span>-</span>
-      <span>L</span>
-      <span>e</span>
-      <span>v</span>
-      <span>e</span>
-      <span>l</span>
-      <span>-</span>
-      <span>U</span>
-      <span>p</span>
-    </h1>
+      
+      <h1>Experiences Input Form</h1>
       <h2>Level: {culculateLevel(experiences).level}<span>（{levelMessage(culculateLevel(experiences).level)}）</span></h2>
       <h2>Current Exp: {culculateLevel(experiences).totalexp} / 100</h2>
 
@@ -110,6 +99,7 @@ export default function ExpPage(){
           placeholder="経験を入力(例：筋トレ）"
         />
 
+        <span>経験に対する経験値を入力：</span>
         <input
           type="number"
           min="0"
@@ -128,7 +118,7 @@ export default function ExpPage(){
         </div>
       ))}
 
-      <button onClick={() => setLUModal(true)}>モーダルを表示</button>
+      <button onClick={() => navigate('/Graph')}>Graphへ</button>
     </>
   )
 }
