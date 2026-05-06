@@ -1,11 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import LevelUpModal from './LevelUpModal'
 import './ExperiencePage.css'
 import { useNavigate } from 'react-router-dom'
 
 type Status = {
   level: number
-  totalexp: number
+  currentExp: number
+  totalExp: number
+  nextLevelExp: number
 }
 
 type Experience = {
@@ -17,57 +19,67 @@ export default function ExpPage(){
   const [experience, setExperience] = useState('')
   const [exp, setExp] = useState(0)
   const [experiences, setExperiences] = useState<Experience[]>([])
+  const [status, setStatus] = useState<Status>({
+    level: 1,
+    currentExp: 0,
+    totalExp: 0,
+    nextLevelExp: 100,
+  })
   const [isLUModal, setLUModal] = useState<boolean>(false)
   const navigate = useNavigate()
+
+
+  useEffect(() => {
+    const loadInitialData = async () => {
+      const expResponse = await fetch('http://localhost:3001/api/experiences')
+      const expData = await expResponse.json()
+
+      const statusResponse = await fetch('http://localhost:3001/api/status')
+      const statusData = await statusResponse.json()
+
+      setExperiences(expData.items)
+      setStatus(statusData)
+    }
+
+    loadInitialData()
+  }, [])
+
+
+
+  
+
 
   const onClose = () => {
       setLUModal(false)
   }
 
-  const addExperience = () => {
-    if (!experience.trim()) return
+  const addExperience = async () => {
+  if (!experience.trim()) return
 
-    if(exp >= 0 && exp <= 100){
-      const currentStatus = culculateLevel(experiences)
+  const response = await fetch('http://localhost:3001/api/experiences', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      experience: experience.trim(),
+      exp,
+    }),
+  })
 
-      const nextExperiences: Experience[] = [
-        ...experiences,
-        {experience: experience.trim(), exp}
-      ]
+    const data = await response.json()
 
-      const nextStatus: Status = culculateLevel(nextExperiences)
+    setExperiences((prev) => [...prev, data.item])
+    setStatus(data.status)
 
-      if(nextStatus.level - currentStatus.level >= 1){
-        setLUModal(true)
-      }
-
-      setExperiences(nextExperiences)
-      
-    }else{
-      alert('入力できる数値は0~100です！')
-      return
+    if (data.levelUp) {
+      setLUModal(true)
     }
+
     setExperience('')
     setExp(0)
   }
 
-
-  const culculateLevel = (exps: Experience[]) => {
-    const newStatus: Status = {
-      level: 1,
-      totalexp: 0
-    }
-
-    for (let i = 0; i < exps.length; i++){
-      newStatus.totalexp += exps[i].exp
-      if(newStatus.totalexp >= 100){
-        newStatus.level += Math.floor(newStatus.totalexp / 100)
-        newStatus.totalexp -= 100 * Math.floor(newStatus.totalexp / 100)
-      }
-    }
-
-    return newStatus
-  }
 
   const levelMessage = (level: number) => {
     if(level < 10) return 'これから頑張っていきましょう！'
@@ -85,11 +97,11 @@ export default function ExpPage(){
 
   return (
     <>
-      <LevelUpModal isOpen={isLUModal} level={culculateLevel(experiences).level} onClose={onClose}/>
+      <LevelUpModal isOpen={isLUModal} level={status.level} onClose={onClose}/>
       
       <h1>Experiences Input Form</h1>
-      <h2>Level: {culculateLevel(experiences).level}<span>（{levelMessage(culculateLevel(experiences).level)}）</span></h2>
-      <h2>Current Exp: {culculateLevel(experiences).totalexp} / 100</h2>
+      <h2>Level: {status.level}<span>（{levelMessage(status.level)}）</span></h2>
+      <h2>Current Exp: {status.currentExp} / 100</h2>
 
       <div className="inputItems">
         <input
