@@ -40,5 +40,11 @@
     "experience": "筋トレ",
     "exp": 80,
     "createdAt": "2026-05-06T09:35:10Z"
+  },
+  {
+    "id": "03fa1d76-77dd-01c6-4f33-9b15469e9f9e",
+    "experience": "勉強",
+    "exp": 80,
+    "createdAt": "2026-05-06T09:38:47Z"
   }
 ]

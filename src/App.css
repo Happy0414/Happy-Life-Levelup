@@ -41,4 +41,22 @@
   color: #888;
 }
 
+body{
+  background-color: beige;
+}
+
+header{
+  background-color: brown;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: -2rem;
+  margin-left: calc(50% - 50vw);
+  width: 100vw;
+}
+
+.headBtn{
+  background-color: white;
+  color: black;
+}
 

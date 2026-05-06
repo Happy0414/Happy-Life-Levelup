@@ -5,3 +5,9 @@
 .aboutBtn{
     border: solid 1px black;
 }
+
+.startBtn{
+    background-color: orange;
+    width: 250px;
+    height: auto;
+}
