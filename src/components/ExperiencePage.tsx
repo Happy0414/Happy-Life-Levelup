@@ -45,39 +45,45 @@ export default function ExpPage(){
   }, [])
 
 
-
-  
-
-
   const onClose = () => {
       setLUModal(false)
   }
 
   const addExperience = async () => {
-  if (!experience.trim()) return
+    if (!experience.trim()) return
 
-  const response = await fetch('http://localhost:3001/api/experiences', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      experience: experience.trim(),
-      exp,
-    }),
-  })
-
-    const data = await response.json()
-
-    setExperiences((prev) => [...prev, data.item])
-    setStatus(data.status)
-
-    if (data.levelUp) {
-      setLUModal(true)
+    if(exp < 0 || exp > 100){
+      alert('経験値は0から100の範囲で入力してください。')
+      return
     }
 
-    setExperience('')
-    setExp(0)
+    const response = await fetch('http://localhost:3001/api/experiences', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        experience: experience.trim(),
+        exp,
+      }),
+    })
+
+      const data = await response.json()
+
+      if(!response.ok){
+        alert(data.errors?.[0] ?? '経験の追加に失敗しました。')
+        return
+      }
+
+      setExperiences((prev) => [...prev, data.item])
+      setStatus(data.status)
+
+      if (data.levelUp) {
+        setLUModal(true)
+      }
+
+      setExperience('')
+      setExp(0)
   }
 
 
