@@ -11,8 +11,10 @@ type Status = {
 }
 
 type Experience = {
+  id: string
   experience: string
   exp: number
+  createdAt: string
 }
 
 export default function ExpPage(){
@@ -128,10 +130,11 @@ export default function ExpPage(){
         <button onClick={addExperience} className="addBtn">追加</button>
       </div>
 
-      {experiences.map((item, index) => (
-        <div key={index} className="experience-item">
+      {experiences.map((item) => (
+        <div key={item.id} className="experience-item">
           <p className="expContents">経験：{item.experience}</p>
           <p className="expValue">経験値：{item.exp}</p>
+          <p className="expData">経験日時：{item.createdAt}</p>
         </div>
       ))}
 
