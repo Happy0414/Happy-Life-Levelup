@@ -1,9 +1,22 @@
-.overLay{
-    border: solid 2px black;
-    background-color: gray;
+.overLay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    border: 0;
+    background-color: rgba(38, 50, 56, 0.48);
+    backdrop-filter: blur(8px);
+    padding: 1rem;
 }
 
-.modalBox{
-    border: solid 2px black;
+.modalBox {
+    width: min(420px, 100%);
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 8px;
     background-color: white;
+    box-shadow: 0 24px 70px rgba(38, 50, 56, 0.28);
+    color: #263238;
+    padding: 2rem;
 }

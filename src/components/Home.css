@@ -1,13 +1,35 @@
-.title span:nth-child(3n+1) { color: red; }
-.title span:nth-child(3n+2) { color: blue; }
-.title span:nth-child(3n)   { color: green; }
+.title {
+    margin-top: 2.5rem;
+    color: #263238;
+    font-weight: 850;
+}
+
+.title span {
+    display: inline-block;
+    text-shadow: 0 8px 22px rgba(55, 71, 79, 0.12);
+}
+
+.title span:nth-child(3n+1) { color: #00897b; }
+.title span:nth-child(3n+2) { color: #5d4037; }
+.title span:nth-child(3n)   { color: #ef6c00; }
 
 .aboutBtn{
-    border: solid 1px black;
+    border: 1px solid #cfd8dc;
+    background: #ffffff;
+    color: #37474f;
 }
 
 .startBtn{
-    background-color: orange;
+    background-color: #ef6c00;
+    color: #ffffff;
     width: 250px;
+    max-width: 100%;
     height: auto;
+    border: 1px solid #ef6c00;
+    box-shadow: 0 12px 26px rgba(239, 108, 0, 0.22);
+}
+
+.startBtn:hover {
+    background-color: #d95f00;
+    border-color: #d95f00;
 }
