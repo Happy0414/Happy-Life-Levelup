@@ -21,7 +21,7 @@ const maxBodySize = 1 << 20
 var users = []user{
 	{ID: "user-1", Name: "ユーザ1"},
 	{ID: "user-2", Name: "ユーザ2"},
-	{ID: "happy", Name: "Happy"}
+	{ID: "happy", Name: "Happy"},
 }
 
 type experienceEntry struct {
