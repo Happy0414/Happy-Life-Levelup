@@ -18,16 +18,28 @@ import (
 
 const maxBodySize = 1 << 20
 
+var users = []user{
+	{ID: "user-1", Name: "ユーザ1"},
+	{ID: "user-2", Name: "ユーザ2"},
+}
+
 type experienceEntry struct {
 	ID         string `json:"id"`
+	UserID     string `json:"userId"`
 	Experience string `json:"experience"`
 	Exp        int    `json:"exp"`
 	CreatedAt  string `json:"createdAt"`
 }
 
 type experienceInput struct {
+	UserID     string `json:"userId"`
 	Experience string `json:"experience"`
 	Exp        *int   `json:"exp"`
+}
+
+type user struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
 }
 
 type status struct {
@@ -56,6 +68,7 @@ func main() {
 	app := &store{dataFile: dataFile}
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/health", app.handleHealth)
+	mux.HandleFunc("/api/users", app.handleUsers)
 	mux.HandleFunc("/api/experiences", app.handleExperiences)
 	mux.HandleFunc("/api/status", app.handleStatus)
 
@@ -100,6 +113,20 @@ func (s *store) handleHealth(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]bool{"ok": true})
 }
 
+func (s *store) handleUsers(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/api/users" {
+		writeJSON(w, http.StatusNotFound, map[string]string{"message": "Not found"})
+		return
+	}
+
+	if r.Method != http.MethodGet {
+		writeJSON(w, http.StatusMethodNotAllowed, map[string]string{"message": "Method not allowed"})
+		return
+	}
+
+	writeJSON(w, http.StatusOK, map[string][]user{"items": users})
+}
+
 func (s *store) handleExperiences(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/api/experiences" {
 		writeJSON(w, http.StatusNotFound, map[string]string{"message": "Not found"})
@@ -108,7 +135,7 @@ func (s *store) handleExperiences(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodGet:
-		s.handleListExperiences(w)
+		s.handleListExperiences(w, r)
 	case http.MethodPost:
 		s.handleCreateExperience(w, r)
 	default:
@@ -127,22 +154,34 @@ func (s *store) handleStatus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	userID, ok := readOptionalUserID(w, r)
+	if !ok {
+		return
+	}
+
 	experiences, err := s.readExperiences()
 	if err != nil {
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"message": "Failed to read experiences"})
 		return
 	}
 
+	experiences = filterExperiencesByUser(experiences, userID)
 	writeJSON(w, http.StatusOK, calculateStatus(experiences))
 }
 
-func (s *store) handleListExperiences(w http.ResponseWriter) {
+func (s *store) handleListExperiences(w http.ResponseWriter, r *http.Request) {
+	userID, ok := readOptionalUserID(w, r)
+	if !ok {
+		return
+	}
+
 	experiences, err := s.readExperiences()
 	if err != nil {
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"message": "Failed to read experiences"})
 		return
 	}
 
+	experiences = filterExperiencesByUser(experiences, userID)
 	writeJSON(w, http.StatusOK, map[string][]experienceEntry{"items": experiences})
 }
 
@@ -177,6 +216,7 @@ func (s *store) handleCreateExperience(w http.ResponseWriter, r *http.Request) {
 	beforeStatus := calculateStatus(experiences)
 	item := experienceEntry{
 		ID:         newID(),
+		UserID:     value.UserID,
 		Experience: value.Experience,
 		Exp:        value.Exp,
 		CreatedAt:  time.Now().UTC().Format(time.RFC3339),
@@ -199,7 +239,14 @@ func (s *store) handleCreateExperience(w http.ResponseWriter, r *http.Request) {
 
 func validateExperienceInput(input experienceInput) (experienceEntry, []string) {
 	var validationErrors []string
+	userID := strings.TrimSpace(input.UserID)
 	experience := strings.TrimSpace(input.Experience)
+
+	if userID == "" {
+		validationErrors = append(validationErrors, "userId is required")
+	} else if !isValidUserID(userID) {
+		validationErrors = append(validationErrors, "userId must be one of the configured users")
+	}
 
 	if experience == "" {
 		validationErrors = append(validationErrors, "experience is required")
@@ -214,9 +261,52 @@ func validateExperienceInput(input experienceInput) (experienceEntry, []string) 
 	}
 
 	return experienceEntry{
+		UserID:     userID,
 		Experience: experience,
 		Exp:        *input.Exp,
 	}, nil
+}
+
+func readOptionalUserID(w http.ResponseWriter, r *http.Request) (string, bool) {
+	userID := strings.TrimSpace(r.URL.Query().Get("userId"))
+	if userID == "" {
+		return "", true
+	}
+
+	if !isValidUserID(userID) {
+		writeJSON(w, http.StatusBadRequest, map[string]any{
+			"message": "Invalid userId",
+			"errors":  []string{"userId must be one of the configured users"},
+		})
+		return "", false
+	}
+
+	return userID, true
+}
+
+func isValidUserID(userID string) bool {
+	for _, user := range users {
+		if user.ID == userID {
+			return true
+		}
+	}
+
+	return false
+}
+
+func filterExperiencesByUser(experiences []experienceEntry, userID string) []experienceEntry {
+	if userID == "" {
+		return experiences
+	}
+
+	filtered := make([]experienceEntry, 0, len(experiences))
+	for _, item := range experiences {
+		if item.UserID == userID {
+			filtered = append(filtered, item)
+		}
+	}
+
+	return filtered
 }
 
 func (s *store) readExperiences() ([]experienceEntry, error) {

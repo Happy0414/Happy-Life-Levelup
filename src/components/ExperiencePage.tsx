@@ -11,6 +11,7 @@ type Status = {
 }
 
 type Experience = {
+  userID: string
   id: string
   experience: string
   exp: number
@@ -29,6 +30,8 @@ export default function ExpPage(){
   })
   const [isLUModal, setLUModal] = useState<boolean>(false)
   const navigate = useNavigate()
+
+  const [selectedUserId, setSelectedUserId] = useState('user_1')
 
 
   useEffect(() => {
@@ -107,7 +110,15 @@ export default function ExpPage(){
     <>
       <LevelUpModal isOpen={isLUModal} level={status.level} onClose={onClose}/>
       
+      <select
+        value={selectedUserId}
+        onChange={(e) => setSelectedUserId(e.target.value)}>
+
+        <option value="user_1">Happy</option>
+        <option value="user_2">ChatGPT</option>
+      </select>
       <h1>Experiences Input Form</h1>
+      <h2>ユーザー名：{selectedUserId === 'user_1' ? 'Happy' : 'ChatGPT'}</h2>
       <h2>Level: {status.level}<span>（{levelMessage(status.level)}）</span></h2>
       <h2>Current Exp: {status.currentExp} / 100</h2>
 
