@@ -213,7 +213,7 @@ func (s *store) handleCreateExperience(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	beforeStatus := calculateStatus(experiences)
+	beforeStatus := calculateStatus(filterExperiencesByUser(experiences, value.UserID))
 	item := experienceEntry{
 		ID:         newID(),
 		UserID:     value.UserID,
@@ -228,7 +228,7 @@ func (s *store) handleCreateExperience(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	nextStatus := calculateStatus(nextExperiences)
+	nextStatus := calculateStatus(filterExperiencesByUser(nextExperiences, value.UserID))
 	writeJSON(w, http.StatusCreated, map[string]any{
 		"item":         item,
 		"status":       nextStatus,

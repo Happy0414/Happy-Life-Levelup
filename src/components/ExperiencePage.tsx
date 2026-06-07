@@ -11,11 +11,16 @@ type Status = {
 }
 
 type Experience = {
-  userID: string
+  userId: string
   id: string
   experience: string
   exp: number
   createdAt: string
+}
+
+type User = {
+  id: string
+  name: string
 }
 
 export default function ExpPage(){
@@ -31,15 +36,16 @@ export default function ExpPage(){
   const [isLUModal, setLUModal] = useState<boolean>(false)
   const navigate = useNavigate()
 
-  const [selectedUserId, setSelectedUserId] = useState('user_1')
+  const [users, setUsers] = useState<User[]>([])
+  const [selectedUserId, setSelectedUserId] = useState('user-1')
 
 
   useEffect(() => {
     const loadInitialData = async () => {
-      const expResponse = await fetch('http://localhost:3001/api/experiences')
+      const expResponse = await fetch(`http://localhost:3001/api/experiences?userId=${selectedUserId}`)
       const expData = await expResponse.json()
 
-      const statusResponse = await fetch('http://localhost:3001/api/status')
+      const statusResponse = await fetch(`http://localhost:3001/api/status?userId=${selectedUserId}`)
       const statusData = await statusResponse.json()
 
       setExperiences(expData.items)
@@ -47,6 +53,16 @@ export default function ExpPage(){
     }
 
     loadInitialData()
+  }, [selectedUserId])
+
+  useEffect(() => {
+    const loadUsers = async () => {
+      const response = await fetch('http://localhost:3001/api/users')
+      const userData = await response.json()
+
+      setUsers(userData.items)
+    }
+    loadUsers()
   }, [])
 
 
@@ -68,6 +84,7 @@ export default function ExpPage(){
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        userId: selectedUserId,
         experience: experience.trim(),
         exp,
       }),
@@ -110,15 +127,20 @@ export default function ExpPage(){
     <>
       <LevelUpModal isOpen={isLUModal} level={status.level} onClose={onClose}/>
       
+      <h2>ユーザーを選択：</h2>
       <select
         value={selectedUserId}
-        onChange={(e) => setSelectedUserId(e.target.value)}>
-
-        <option value="user_1">Happy</option>
-        <option value="user_2">ChatGPT</option>
+        onChange={(e) => setSelectedUserId(e.target.value)}
+      >
+        {users.map((user) => (
+          <option key={user.id} value={user.id}>
+            {user.name}
+          </option>
+        ))}
       </select>
+
       <h1>Experiences Input Form</h1>
-      <h2>ユーザー名：{selectedUserId === 'user_1' ? 'Happy' : 'ChatGPT'}</h2>
+      <h2>ユーザー名：{users.find((user) => user.id === selectedUserId)?.name || 'ユーザー'}</h2>
       <h2>Level: {status.level}<span>（{levelMessage(status.level)}）</span></h2>
       <h2>Current Exp: {status.currentExp} / 100</h2>
 
